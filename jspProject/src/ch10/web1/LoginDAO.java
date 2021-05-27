@@ -120,5 +120,33 @@ public class LoginDAO {
 		return count;
 	}
 	
+	// DB에서 레코드를 numberOfRecord 만큼 가져온다
+	
+	public ArrayList<LoginDTO> getListUser(int p, int numberOfRecords) throws ClassNotFoundException, SQLException {
+		ArrayList<LoginDTO> dtos = new ArrayList<LoginDTO>();
+
+		Connection con = getConnection();
+
+		String sql = "select * from (select rownum num, L.* from (select * from login order by id asc) L) "
+				+ "where num between ? and ?";
+		PreparedStatement st = con.prepareStatement(sql);
+		st.setInt(1, 1 + (p - 1) * numberOfRecords);
+		st.setInt(2, numberOfRecords * p);
+		
+		ResultSet rs = st.executeQuery();
+
+		while (rs.next()) {
+			LoginDTO item = new LoginDTO(rs.getString("ID"), rs.getString("NAME"), rs.getString("PWD"));
+
+			dtos.add(item);
+		}
+		if (st != null)
+			st.close();
+		if (con != null)
+			con.close();
+
+		return dtos;
+	}
+	
 	
 }
