@@ -102,5 +102,23 @@ public class LoginDAO {
 		con.close();
 	}
 	
+	public int getCount() throws ClassNotFoundException, SQLException{
+		int count = 0;
+		
+		Connection con = getConnection();
+		String sql = "SELECT COUNT(ID) COUNT FROM LOGIN";
+		
+		Statement st = con.createStatement();
+		ResultSet rs = st.executeQuery(sql);
+		
+		if(rs.next()) count = rs.getInt("COUNT");
+		
+		rs.close();
+		st.close();
+		con.close();
+		
+		return count;
+	}
+	
 	
 }
